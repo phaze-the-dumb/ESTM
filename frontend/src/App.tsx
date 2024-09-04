@@ -18,8 +18,6 @@ let App = ( props: any ) => {
     anime.set(content, { left: '10px', width: 'calc(100vw - 20px)', top: '10px', height: 'calc(100% - 20px)' });
 
     MatchManager.Init(topbar);
-    ConfirmationManager.Init(content);
-
     LiveDataManager.Init();
 
     SideBarManager.Init(
@@ -76,6 +74,7 @@ let App = ( props: any ) => {
 
   return (
     <>
+      <div ref={ConfirmationManager.Init}></div>
       <div class="sidebar" ref={sidebar!}>
         <div class="sidebar-buttons" ref={sidebarButtons!}></div>
       </div>
