@@ -41,6 +41,9 @@ let Brackets = () => {
           }),
         ], "dash");
 
+        if(cooki.getStore('token'))
+          window.LiveDataManager.sendHello();
+
         window.MatchManager.fetchData();
         window.SideBarManager.open();
 

@@ -19,7 +19,9 @@ class LiveDataManager{
 
     this._ws.onopen = () => {
       console.log('Connected to backend');
-      this.sendHello();
+
+      if(cooki.getStore('token'))
+        this.sendHello();
     }
 
     this._ws.onmessage = ( e ) => {
@@ -65,7 +67,7 @@ class LiveDataManager{
     this._teamsSocketUpdate = cb;
   }
 
-  private sendHello(){
+  public sendHello(){
     if(this._sentHello)return;
     this._sentHello = true;
 

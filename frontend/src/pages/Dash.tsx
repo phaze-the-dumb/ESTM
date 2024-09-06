@@ -35,6 +35,9 @@ let Dash = () => {
           }),
         ], "dash");
 
+        if(cooki.getStore('token'))
+          window.LiveDataManager.sendHello();
+
         window.SideBarManager.open();
         window.MatchManager.fetchData();
       })
