@@ -35,6 +35,7 @@ class BracketDiagramManager{
     // }, 1000);
 
     window.addEventListener('resize', () => {
+      if(!this._canvas)return;
       let rect = this._canvas.getBoundingClientRect();
 
       this._canvas.width = rect.width;

@@ -1,0 +1,18 @@
+.overview-header{
+  margin: auto;
+  width: calc(100% - 200px);
+  margin-top: 50px;
+  padding: 20px;
+  border-radius: 20px;
+  background: #0D1B2A;
+  box-shadow: #0005 0 0 10px;
+  text-align: center;
+}
+
+.overview-row{
+  display: flex;
+}
+
+.overview-column{
+  width: 50%;
+}

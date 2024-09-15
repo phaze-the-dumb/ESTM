@@ -18,7 +18,7 @@ let Brackets = () => {
     BracketDiagramManager.Init();
 
     window.CacheManager.get(window.ENDPOINT + '/api/v1/auth/verify')
-      .then(data => {
+      .then(async data => {
         if(!data.ok){
           cooki.tryRemoveStore('token');
           natigate('/');
@@ -44,8 +44,8 @@ let Brackets = () => {
         if(cooki.getStore('token'))
           window.LiveDataManager.sendHello();
 
-        window.MatchManager.fetchData();
         window.SideBarManager.open();
+        await window.MatchManager.fetchData();
 
         setTimeout(() => {
           window.BracketDiagramManager.start(canvas);

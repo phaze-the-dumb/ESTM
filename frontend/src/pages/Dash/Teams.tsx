@@ -301,7 +301,7 @@ let Teams = () => {
     if(!token)return natigate('/');
 
     window.CacheManager.get(window.ENDPOINT + '/api/v1/auth/verify')
-      .then(data => {
+      .then(async data => {
         if(!data.ok){
           cooki.tryRemoveStore('token');
           natigate('/');
@@ -327,8 +327,8 @@ let Teams = () => {
         if(cooki.getStore('token'))
           window.LiveDataManager.sendHello();
 
-        window.MatchManager.fetchData();
         window.SideBarManager.open();
+        await window.MatchManager.fetchData();
       })
       .catch(console.error);
 

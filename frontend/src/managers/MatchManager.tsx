@@ -31,54 +31,58 @@ class MatchManager{
     this._matchStatusText = matchStatusText;
   }
 
-  public fetchData(){
-    if(this._hasFetchedData)return;
-    this._hasFetchedData = true;
+  public fetchData(): Promise<void>{
+    return new Promise(res => {
+      if(this._hasFetchedData)return;
+      this._hasFetchedData = true;
 
-    window.CacheManager.get(window.ENDPOINT + '/api/v1/matches/selected')
-      .then(data => {
-        if(!data.ok){
-          alert(data.error);
-          return;
-        }
+      window.CacheManager.get(window.ENDPOINT + '/api/v1/matches/selected')
+        .then(data => {
+          if(!data.ok){
+            alert(data.error);
+            return;
+          }
 
-        if(data.match){
-          this._selectedMatchData = data.match;
-          this._matchStatusText.innerText = `Selected Match: ${this._selectedMatchData!.name}`;
+          if(data.match){
+            this._selectedMatchData = data.match;
+            this._matchStatusText.innerText = `Selected Match: ${this._selectedMatchData!.name}`;
 
-          if(this._matchChangeCB)this._matchChangeCB(this._selectedMatchData);
-          if(this._bracketsHookCB)this._bracketsHookCB(this._selectedMatchData);
-        }
+            if(this._matchChangeCB)this._matchChangeCB(this._selectedMatchData);
+            if(this._bracketsHookCB)this._bracketsHookCB(this._selectedMatchData);
+          }
 
-        window.CacheManager.get(window.ENDPOINT + '/api/v1/matches/list')
-          .then(async data => {
-            if(!data.ok){
-              console.error(data);
-              return;
-            }
+          window.CacheManager.get(window.ENDPOINT + '/api/v1/matches/list')
+            .then(async data => {
+              if(!data.ok){
+                console.error(data);
+                return;
+              }
 
-            this._matches = data.matches;
+              this._matches = data.matches;
 
-            data.matches.forEach(( match: Match ) => {
-              this._matchList[match._id] = <div
-                class={ "match" + ( this._selectedMatchData && this._selectedMatchData._id === match._id ? ' match-selected' : '' ) }
-                onClick={() => window.MatchManager.selectMatch(match._id)}
-              >
-                { match.name }
-              </div> as HTMLDivElement;
+              data.matches.forEach(( match: Match ) => {
+                this._matchList[match._id] = <div
+                  class={ "match" + ( this._selectedMatchData && this._selectedMatchData._id === match._id ? ' match-selected' : '' ) }
+                  onClick={() => window.MatchManager.selectMatch(match._id)}
+                >
+                  { match.name }
+                </div> as HTMLDivElement;
+              })
+
+              if(this._matchHTMLList){
+                this._matchHTMLList.innerHTML = '';
+                Object.values(this._matchList).forEach(( el: any ) => { this._matchHTMLList!.appendChild(el); })
+              }
+
+              this._matchesChangeCB.forEach(cb => cb(this._matches, this._selectedMatchData));
+              this.loaded = true;
+
+              res();
             })
-
-            if(this._matchHTMLList){
-              this._matchHTMLList.innerHTML = '';
-              Object.values(this._matchList).forEach(( el: any ) => { this._matchHTMLList!.appendChild(el); })
-            }
-
-            this._matchesChangeCB.forEach(cb => cb(this._matches, this._selectedMatchData));
-            this.loaded = true;
-          })
-          .catch(console.error);
-      })
-      .catch(console.error);
+            .catch(console.error);
+        })
+        .catch(console.error);
+    })
   }
 
   public selectMatchDisplay( id: string ){
