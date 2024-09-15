@@ -38,7 +38,7 @@ class LiveDataManager{
         case 'delete-match':
           window.MatchManager.deleteDisplay(json.match._id);
           if(window.BracketDiagramManager)window.BracketDiagramManager.fetchData(window.MatchManager.selected());
-          
+
           break;
         case 'create-match':
           let match = new Match(json.match._id, json.match.name);
@@ -58,6 +58,21 @@ class LiveDataManager{
           this._teamsSocketUpdate(json);
           if(window.BracketDiagramManager)window.BracketDiagramManager.fetchData(window.MatchManager.selected());
 
+          break;
+        case 'start-match':
+          window.MatchManager.startMatch();
+          break;
+        case 'cancel-match':
+          window.MatchManager.cancelMatch();
+          break;
+        case 'next-bracket':
+          window.MatchManager.setNextTeam1And2(json.bracket.team1, json.bracket.team2);
+          break;
+        case 'current-bracket':
+          window.MatchManager.setTeam1And2(json.bracket.team1, json.bracket.team2);
+          break;
+        case 'win-bracket':
+          window.MatchManager.setWinningTeam(json.team);
           break;
       }
     }

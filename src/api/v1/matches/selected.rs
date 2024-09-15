@@ -1,7 +1,7 @@
 use std::sync::Arc;
 use axum::{ http::{header, HeaderMap, StatusCode}, response::IntoResponse, Extension, Json };
 use serde_json::json;
-use crate::{apphandler::AppHandler, util};
+use crate::{apphandler::AppHandler, structs::config::AppState, util};
 
 #[axum::debug_handler]
 pub async fn get(
@@ -33,7 +33,7 @@ pub async fn get(
       ( header::ACCESS_CONTROL_ALLOW_METHODS, "GET" ),
       ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization" )
     ],
-    Json(json!({ "ok": true, "match": game.unwrap() }))
+    Json(json!({ "ok": true, "match": game.unwrap(), "playing": config.current_state == AppState::PLAYING }))
   )
 }
 pub async fn options() -> impl IntoResponse{

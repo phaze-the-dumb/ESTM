@@ -33,6 +33,15 @@ fn start_webserver( handle: Arc<AppHandler> ){
       .route("/api/v1/auth/verify", get(api::v1::auth::verify::get))
 
       // Matches Routes
+      .route("/api/v1/matches/start", options(api::v1::matches::start::options))
+      .route("/api/v1/matches/start", post(api::v1::matches::start::post))
+
+      .route("/api/v1/matches/cancel", options(api::v1::matches::cancel::options))
+      .route("/api/v1/matches/cancel", post(api::v1::matches::cancel::post))
+
+      .route("/api/v1/matches/next", options(api::v1::matches::next::options))
+      .route("/api/v1/matches/next", post(api::v1::matches::next::post))
+
       .route("/api/v1/matches/create", options(api::v1::matches::create::options))
       .route("/api/v1/matches/create", post(api::v1::matches::create::post))
 
@@ -70,6 +79,12 @@ fn start_webserver( handle: Arc<AppHandler> ){
       // Brackets Routes
       .route("/api/v1/brackets/get_match", options(api::v1::brackets::get_match::options))
       .route("/api/v1/brackets/get_match", get(api::v1::brackets::get_match::get))
+
+      .route("/api/v1/brackets/current", options(api::v1::brackets::current::options))
+      .route("/api/v1/brackets/current", get(api::v1::brackets::current::get))
+
+      .route("/api/v1/brackets/winner", options(api::v1::brackets::winner::options))
+      .route("/api/v1/brackets/winner", put(api::v1::brackets::winner::put))
 
       .layer(Extension(handle));
 

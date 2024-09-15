@@ -1,6 +1,6 @@
 use super::player::Player;
 
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize, Clone)]
 pub struct Team{
   pub _id: String,
   pub name: String,

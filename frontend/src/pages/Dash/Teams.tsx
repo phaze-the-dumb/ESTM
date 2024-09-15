@@ -1,4 +1,4 @@
-import { onMount } from 'solid-js';
+import { onMount, Show } from 'solid-js';
 import { useNavigate } from "@solidjs/router";
 import { SideBarButton } from '../../managers/SideBarManager';
 import * as cooki from '../../managers/CookiManager';
@@ -7,6 +7,8 @@ import anime from 'animejs';
 import './Teams.css'
 import { Match } from '../../structs/Match';
 import { Team } from '../../structs/Team';
+
+// TODO: need to implement players into the teams
 
 let Teams = () => {
   let natigate = useNavigate();
@@ -324,8 +326,8 @@ let Teams = () => {
           }),
         ], "dash");
 
-        if(cooki.getStore('token'))
-          window.LiveDataManager.sendHello();
+        // if(cooki.getStore('token'))
+        //   window.LiveDataManager.sendHello();
 
         window.SideBarManager.open();
         await window.MatchManager.fetchData();
@@ -335,7 +337,7 @@ let Teams = () => {
     teamTitleEdit.style.display = 'none';
 
     teamTitle.onclick = () => {
-      if(!selectedMatch)return;
+      if(!selectedMatch || window.MatchManager.isPlaying())return;
 
       teamTitleEdit.style.display = 'inline-block';
       teamTitle.style.display = 'none';
@@ -416,7 +418,12 @@ let Teams = () => {
       </div>
 
       <div class="teams-list" ref={teamsList!}>Loading...</div>
-      <div class="team-create-button button" onClick={addTeam} ref={addTeamButton!} style={{ display: 'none' }}>+ Add Team</div><br /><br />
+
+      <div style={{ display: window.MatchManager.isPlaying() ? 'none' : 'block' }}>
+        <div class="team-create-button button" onClick={addTeam} ref={addTeamButton!} style={{ display: 'none' }}>+ Add Team</div>
+      </div>
+
+      <br /><br />
 
       <div class="team-create-container" ref={teamCreateContainer!}>
         <div class="back-button" ref={teamCreateBackButton!}>&lt; Back</div>
@@ -459,46 +466,54 @@ let Teams = () => {
 
             </div><br /><br />
 
-            <div class="button-danger" onClick={() => window.ConfirmationManager.show(
-              <div>Are you sure you want to delete this team?</div> as HTMLElement,
-              () => {
-                if(!selectedTeamId)return;
+            <div style={{ display: window.MatchManager.isPlaying() ? 'none' : 'block' }}>
+              <div class="button-danger" onClick={() => window.ConfirmationManager.show(
+                <div>Are you sure you want to delete this team?</div> as HTMLElement,
+                () => {
+                  if(!selectedTeamId)return;
 
-                teamsListContainer[selectedTeamId].remove();
-                teams = teams.filter(x => x._id !== selectedTeamId);
+                  teamsListContainer[selectedTeamId].remove();
+                  teams = teams.filter(x => x._id !== selectedTeamId);
 
-                anime({
-                  targets: teamEditContainer,
-                  opacity: [ 1, 0 ],
-                  easing: 'easeInOutQuad',
-                  duration: 100,
-                  complete: () => {
-                    teamEditContainer.style.display = 'none';
-                  }
-                })
-
-                fetch(window.ENDPOINT + '/api/v1/teams/delete?id=' + selectedTeamId, {
-                  method: 'DELETE',
-                  headers: {
-                    'Authorization': `Bearer ${cooki.getStore('token')}`
-                  }
-                })
-                  .then(data => data.json())
-                  .then(data => {
-                    if(!data.ok){
-                      alert(data.error);
-                      return;
+                  anime({
+                    targets: teamEditContainer,
+                    opacity: [ 1, 0 ],
+                    easing: 'easeInOutQuad',
+                    duration: 100,
+                    complete: () => {
+                      teamEditContainer.style.display = 'none';
                     }
+                  })
 
-                    selectedTeamId = null;
+                  fetch(window.ENDPOINT + '/api/v1/teams/delete?id=' + selectedTeamId, {
+                    method: 'DELETE',
+                    headers: {
+                      'Authorization': `Bearer ${cooki.getStore('token')}`
+                    }
                   })
-                  .catch(e => {
-                    console.error(e);
-                  })
-              }
-            )}>Delete</div>
+                    .then(data => data.json())
+                    .then(data => {
+                      if(!data.ok){
+                        alert(data.error);
+                        return;
+                      }
+
+                      selectedTeamId = null;
+                    })
+                    .catch(e => {
+                      console.error(e);
+                    })
+                }
+              )}>Delete</div>
+            </div>
           </div>
         </div>
+
+        <Show when={window.MatchManager.isPlaying()}>
+          <div class="teams-not-editable-warning">
+            You cannot edit this team as you are currently in play mode.
+          </div>
+        </Show>
       </div>
     </>
   )

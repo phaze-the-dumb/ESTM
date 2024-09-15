@@ -20,7 +20,10 @@ impl ConfigManager{
       let conf = Config {
         _id: "config".into(),
         current_match: "".into(),
-        current_state: AppState::EDITING
+        current_state: AppState::EDITING,
+        current_bracket_set: 0,
+        current_bracket: 0,
+        round_winner: 0
       };
 
       self.config.insert_one(&conf).await.unwrap();

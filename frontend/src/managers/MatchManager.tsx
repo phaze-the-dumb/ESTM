@@ -1,5 +1,8 @@
+import { createSignal } from "solid-js";
 import { Match } from "../structs/Match";
 import * as cooki from './CookiManager';
+import { Accessor, Setter } from "solid-js";
+import { Team } from "../structs/Team";
 
 // Add an element to the global "window" variable to store the matches
 declare global{
@@ -23,24 +26,123 @@ class MatchManager{
   private _matchesChangeCB: (( match: Match[], selected: Match | null ) => void )[] = [];
 
   private _hasFetchedData = false;
+
+  private _setIsPlaying: Setter<boolean>;
+  private _setBracketWinner: Setter<number>;
+
+  private _setPlayingNextTeam1: Setter<Team | null>;
+  private _setPlayingNextTeam2: Setter<Team | null>;
+
+  private _setPlayingTeam1: Setter<Team | null>;
+  private _setPlayingTeam2: Setter<Team | null>;
+
   public loaded = false;
+
+  public isPlaying: Accessor<boolean>;
+  public bracketWinner: Accessor<number>;
+
+  public playingNextTeam1: Accessor<Team | null>;
+  public playingNextTeam2: Accessor<Team | null>;
+
+  public playingTeam1: Accessor<Team | null>;
+  public playingTeam2: Accessor<Team | null>;
 
   private constructor(
     matchStatusText: HTMLDivElement
   ){
     this._matchStatusText = matchStatusText;
+
+    let [ isPlaying, setIsPlaying ] = createSignal(false);
+
+    this.isPlaying = isPlaying;
+    this._setIsPlaying = setIsPlaying;
+
+    let [ bracketWinner, setBracketWinner ] = createSignal(0);
+
+    this.bracketWinner = bracketWinner;
+    this._setBracketWinner = setBracketWinner;
+
+    let [ playingNextTeam1, setPlayingNextTeam1 ] = createSignal<Team | null>(null);
+    let [ playingNextTeam2, setPlayingNextTeam2 ] = createSignal<Team | null>(null);
+
+    this.playingNextTeam1 = playingNextTeam1;
+    this._setPlayingNextTeam1 = setPlayingNextTeam1;
+
+    this.playingNextTeam2 = playingNextTeam2;
+    this._setPlayingNextTeam2 = setPlayingNextTeam2;
+
+    let [ playingTeam1, setPlayingTeam1 ] = createSignal<Team | null>(null);
+    let [ playingTeam2, setPlayingTeam2 ] = createSignal<Team | null>(null);
+
+    this.playingTeam1 = playingTeam1;
+    this._setPlayingTeam1 = setPlayingTeam1;
+
+    this.playingTeam2 = playingTeam2;
+    this._setPlayingTeam2 = setPlayingTeam2;
+  }
+
+  public startMatch(){
+    this._setIsPlaying(true);
+  }
+
+  public cancelMatch(){
+    this._setIsPlaying(false);
+  }
+
+  public setNextTeam1And2( team1: Team, team2: Team){
+    this._setPlayingNextTeam1(team1);
+    this._setPlayingNextTeam2(team2);
+  }
+
+  public setTeam1And2( team1: Team, team2: Team){
+    this._setPlayingTeam1(team1);
+    this._setPlayingTeam2(team2);
+
+    this._setBracketWinner(0);
+  }
+
+  public setWinningTeam( team: string ){
+    switch(team){
+      case 'team1':
+        this._setBracketWinner(1);
+        break;
+      case 'team2':
+        this._setBracketWinner(2);
+        break;
+    }
   }
 
   public fetchData(): Promise<void>{
-    return new Promise(res => {
-      if(this._hasFetchedData)return;
+    return new Promise((res, rej) => {
+      if(this._hasFetchedData)return res();
       this._hasFetchedData = true;
 
       window.CacheManager.get(window.ENDPOINT + '/api/v1/matches/selected')
         .then(data => {
           if(!data.ok){
             alert(data.error);
+            rej(data.error);
+
             return;
+          }
+
+          this._setIsPlaying(data.playing);
+
+          if(data.playing){
+            window.CacheManager.get(window.ENDPOINT + '/api/v1/brackets/current')
+              .then(data => {
+                this.setTeam1And2(data.current[0], data.current[1]);
+                this.setNextTeam1And2(data.next[0], data.next[1]);
+
+                switch(data.current[2]){
+                  case 1:
+                    this.setWinningTeam('team1');
+                    break;
+                  case 2:
+                    this.setWinningTeam('team2');
+                    break;
+                }
+              });
           }
 
           if(data.match){
@@ -55,6 +157,8 @@ class MatchManager{
             .then(async data => {
               if(!data.ok){
                 console.error(data);
+                rej(data.error);
+
                 return;
               }
 

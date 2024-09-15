@@ -127,8 +127,8 @@ let Matches = () => {
           }),
         ], "dash");
 
-        if(cooki.getStore('token'))
-          window.LiveDataManager.sendHello();
+        // if(cooki.getStore('token'))
+        //   window.LiveDataManager.sendHello();
 
         window.SideBarManager.open();
         await window.MatchManager.fetchData();
@@ -195,21 +195,24 @@ let Matches = () => {
       <div class="matches-header"><h1>Matches</h1></div>
 
       <div class="match-container" ref={( el ) => window.MatchManager.containerREF(el)}></div>
-      <div class="match-create button" onClick={addMatch}>+ Add Match</div>
 
+      <div style={{ display: window.MatchManager.isPlaying() ? 'none' : 'block' }} class="match-create button" onClick={addMatch}>+ Add Match</div>
+
+    <div style={{ display: window.MatchManager.isPlaying() ? 'none' : 'block' }} >
       <div class="match-control" ref={matchContainer!}>
-        <div>
-          <div class="match-title" ref={matchTitle!}>Match</div>
-          <input class="match-title-edit" value="Match" ref={matchTitleEdit!} />
-        </div>
+          <div>
+            <div class="match-title" ref={matchTitle!}>Match</div>
+            <input class="match-title-edit" value="Match" ref={matchTitleEdit!} />
+          </div>
 
-        <br /><br />
-        <div class="button-danger" onClick={() => {
-          window.ConfirmationManager.show(
-            <div>Are you sure you want to delete this match?<br />This will also delete any teams within this match.</div> as HTMLElement,
-            () => window.MatchManager.deleteSelected()
-          )
-        }}>Delete Match</div>
+          <br /><br />
+          <div class="button-danger" onClick={() => {
+            window.ConfirmationManager.show(
+              <div>Are you sure you want to delete this match?<br />This will also delete any teams within this match.</div> as HTMLElement,
+              () => window.MatchManager.deleteSelected()
+            )
+          }}>Delete Match</div>
+        </div>
       </div>
 
       <div class="match-create-container" ref={matchCreateContainer!}>

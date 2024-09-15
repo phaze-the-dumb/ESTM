@@ -112,3 +112,11 @@ input[type="text"]{
   background: #c5c5c5;
   left: -10px;
 }
+
+.column{
+  display: flex;
+}
+
+.row{
+  width: 50%;
+}

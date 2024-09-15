@@ -33,4 +33,15 @@ impl BracketManager{
   pub async fn delete_in_match( &self, match_id: String ){
     self.brackets.delete_many(doc! { "match_id": match_id }).await.unwrap();
   }
+
+  pub async fn get_bracket( &self, bracket_set: u32, bracket: u32, match_id: String ) -> Option<Bracket>{
+    self.brackets.find_one(doc! { "_id": format!("{}:{}:{}", bracket_set, bracket, match_id) }).await.unwrap()
+  }
+
+  pub async fn set_winner( &self, bracket_set: u32, bracket: u32, match_id: String, winner: u32 ){
+    self.brackets.update_one(
+      doc! { "_id": format!("{}:{}:{}", bracket_set, bracket, match_id) },
+      doc! { "$set": { "winner": winner } }
+    ).await.unwrap();
+  }
 }

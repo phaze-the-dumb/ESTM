@@ -16,3 +16,56 @@
 .overview-column{
   width: 50%;
 }
+
+.match-stats{
+  width: 100%;
+  height: calc(100% - 300px);
+  user-select: none;
+}
+
+.match-waiting{
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 1px;
+  font-size: 30px;
+  opacity: .5;
+}
+
+.match-waiting > div > div{
+  margin-top: -60px;
+}
+
+.match-stats-container{
+  width: 100%;
+  height: 100%;
+  text-align: center;
+}
+
+.match-stats-waiting{
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 1px;
+  font-size: 30px;
+  opacity: .5;
+}
+
+.match-stats-waiting-smol{
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 1px;
+  font-size: 15px;
+  opacity: .5;
+}
+
+.match-stats-current{
+  height: 50%;
+}
+
+.match-stats-next{
+  height: 50%;
+}

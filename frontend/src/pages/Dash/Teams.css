@@ -197,3 +197,15 @@
   text-align: center;
   border-bottom: #E0E1DD 2px solid;
 }
+
+.teams-not-editable-warning{
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translate(-50%, 0);
+  border-radius: 20px;
+  background: #0D1B2A;
+  box-shadow: #0005 0 0 10px;
+  text-align: center;
+  padding: 10px 50px;
+}
