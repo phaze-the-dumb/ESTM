@@ -29,32 +29,14 @@ pub async fn post(
         );
       }
 
-      let next_bracket_index = app.get_next_bracket_indexes(&config).await;
-
-      if next_bracket_index.is_err(){
-        return (
-          StatusCode::OK,
-          [
-            ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
-            ( header::ACCESS_CONTROL_ALLOW_METHODS, "POST" ),
-            ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization,Content-Type" )
-          ],
-          Json(json!({ "ok": false, "error": next_bracket_index.unwrap_err() }))
-        );
-      }
-
-      let next_bracket_index = next_bracket_index.unwrap();
-
-      app.config().update(doc! { "current_state": "PLAYING", "current_bracket_set": next_bracket_index.0, "current_bracket": next_bracket_index.1 }).await;
-
-      config.current_bracket_set = next_bracket_index.0;
-      config.current_bracket = next_bracket_index.1;
+      config = app.find_next_full_bracket(config).await.unwrap().0;
+      app.config().update(doc! { "current_bracket": config.current_bracket, "current_bracket_set": config.current_bracket_set }).await;
 
       let user_id = res.unwrap()._id;
       let _ = app.live().tx.lock().await.send(Message::Text(json!({ "type": "start-match", "from": user_id.clone() }).to_string()));
 
-      let next_bracket = app.get_next_bracket(&config).await;
       let current_bracket = app.get_current_bracket(&config).await;
+      let next_bracket = app.get_next_bracket(config).await;
 
       if next_bracket.is_err(){
         return (
