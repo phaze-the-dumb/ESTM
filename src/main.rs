@@ -11,8 +11,8 @@ use apphandler::AppHandler;
 
 #[tokio::main]
 async fn main() {
-  dotenv().expect(".env file not found");
-  let handle = AppHandler::new().await;
+  dotenv().expect(".env file not found"); // Load the ENV file into environment variables
+  let handle = AppHandler::new().await; //
 
   handle.auth().clean_sessions().await;
   start_webserver(handle);
