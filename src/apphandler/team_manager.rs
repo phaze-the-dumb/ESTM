@@ -15,9 +15,10 @@ impl TeamManager{
   }
 
   pub async fn create( &self, name: String, match_id: String ) -> String{
-    let _id = nanoid!();
-    self.teams.insert_one(Team { _id: _id.clone(), name, players: Vec::new(), match_id }).await.unwrap();
+    let _id = nanoid!(); // Generate a random id
 
+    // Create a new team and insert it into the database
+    self.teams.insert_one(Team { _id: _id.clone(), name, players: Vec::new(), match_id }).await.unwrap();
     _id
   }
 
@@ -43,10 +44,12 @@ impl TeamManager{
   }
 
   pub async fn delete_in_match( &self, match_id: String ){
+    // Delete every team with this match_id
     self.teams.delete_many(doc! { "match_id": match_id }).await.unwrap();
   }
 
   pub async fn count( &self, match_id: String ) -> u8{
+    // Get mongo to count every team in the database with the provided match_id
     self.teams.count_documents(doc! { "match_id": match_id }).await.unwrap() as u8
   }
 }

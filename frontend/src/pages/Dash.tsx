@@ -151,9 +151,6 @@ let Dash = () => {
                                 alert(data.error);
                                 return;
                               }
-
-                              if(data.next_bracket.Ok)
-                                window.MatchManager.setNextTeam1And2(data.next_bracket.Ok[0], data.next_bracket.Ok[1]);
                             })
                         }}>{ window.MatchManager.playingTeam1()!.name } Win!</div>
                       </div>
@@ -175,9 +172,6 @@ let Dash = () => {
                               alert(data.error);
                               return;
                             }
-
-                            if(data.next_bracket.Ok)
-                              window.MatchManager.setNextTeam1And2(data.next_bracket.Ok[0], data.next_bracket.Ok[1]);
                           })
                         }}>{ window.MatchManager.playingTeam2()!.name } Win!</div>
                       </div>
