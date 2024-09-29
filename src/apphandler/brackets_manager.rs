@@ -44,4 +44,14 @@ impl BracketManager{
       doc! { "$set": { "winner": winner } }
     ).await.unwrap();
   }
+
+  pub async fn reset_all( &self, match_id: String ){
+    let brackets = self.list_brackets_in_match(match_id).await;
+
+    for bracket in brackets{
+      if !bracket._id.starts_with("0:"){
+        self.brackets.update_one(doc! { "_id": bracket._id }, doc! { "$set": { "winner": -1 } }).await.unwrap();
+      }
+    }
+  }
 }

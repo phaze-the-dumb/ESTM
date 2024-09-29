@@ -42,6 +42,7 @@ pub async fn put(
       }
 
       let _ = app.live().tx.lock().await.send(Message::Text(json!({ "type": "win-bracket", "team": team, "from": res.unwrap()._id }).to_string()));
+      let next_bracket = app.get_next_bracket(config).await;
 
       (
         StatusCode::OK,
@@ -50,7 +51,7 @@ pub async fn put(
           ( header::ACCESS_CONTROL_ALLOW_METHODS, "PUT" ),
           ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization,Content-Type" )
         ],
-        Json(json!({ "ok": true }))
+        Json(json!({ "ok": true, "next_bracket": next_bracket }))
       )
     }
     _ => {

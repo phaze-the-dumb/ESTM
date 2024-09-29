@@ -108,18 +108,43 @@ impl AppHandler{
   }
 
   pub async fn get_next_bracket( &self, config: Config ) -> Result<( Option<Team>, Option<Team> ), &'static str>{
-    let bracket = self.find_next_full_bracket(config.clone()).await.unwrap().1;
+    dbg!(&config);
+    let bracket = self.find_next_full_bracket(config.clone()).await;
+
+    if bracket.is_err(){
+      return Ok(( None, None ))
+    }
+
+    let ( config, bracket ) = bracket.unwrap();
+    dbg!(&config);
+    dbg!(&bracket);
+
     let teams = self.teams.list_teams_in_match(config.current_match.clone()).await;
 
-    let team1 = teams[bracket.team1 as usize].clone();
+    let team1_bracket = self.brackets.get_bracket(config.current_bracket_set - 1, bracket.team1 as u32, config.current_match.clone()).await.unwrap();
+    let team1;
+
+    if team1_bracket.winner == -1{
+      team1 = None;
+    } else{
+      team1 = Some(teams[team1_bracket.winner as usize].clone());
+    }
 
     if bracket.team2 == -1{
       return Err("Team 2 does not exist");
     }
 
-    let team2 = teams[bracket.team2 as usize].clone();
+    let team2_bracket = self.brackets.get_bracket(config.current_bracket_set - 1, bracket.team2 as u32, config.current_match.clone()).await.unwrap();
+    let team2;
 
-    Ok(( Some(team1), Some(team2) ))
+    dbg!(&team2_bracket);
+    if team2_bracket.winner == -1{
+      team2 = None;
+    } else{
+      team2 = Some(teams[team2_bracket.winner as usize].clone());
+    }
+
+    Ok(( team1, team2 ))
   }
 
   pub async fn get_current_bracket( &self, config: &Config ) -> Result<( Option<Team>, Option<Team>, u8 ), &'static str>{
@@ -139,7 +164,6 @@ impl AppHandler{
     let team1 = teams[team1_bracket.winner as usize].clone();
 
     let team2_bracket = self.brackets.get_bracket(config.current_bracket_set - 1, bracket.team2 as u32, config.current_match.clone()).await.unwrap();
-    dbg!(&team2_bracket);
     let team2 = teams[team2_bracket.winner as usize].clone();
 
     if bracket.winner != -1{

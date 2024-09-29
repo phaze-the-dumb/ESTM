@@ -16,6 +16,8 @@ pub async fn post(
   match config.current_state{
     AppState::PLAYING => {
       app.config().update(doc! { "current_state": "EDITING" }).await;
+      app.brackets().reset_all(config.current_match).await;
+
       let _ = app.live().tx.lock().await.send(Message::Text(json!({ "type": "cancel-match", "from": res.unwrap()._id }).to_string()));
 
       (
