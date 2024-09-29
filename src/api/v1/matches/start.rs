@@ -37,7 +37,7 @@ pub async fn post(
 
       let _ = app.live().tx.lock().await.send(Message::Text(json!({ "type": "start-match", "from": user_id.clone() }).to_string()));
 
-      let next_bracket = app.get_next_bracket(&config).await;
+      let next_bracket = app.get_next_bracket(config).await;
 
       if next_bracket.is_err(){
         return (

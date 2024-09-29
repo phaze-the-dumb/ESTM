@@ -1,10 +1,10 @@
-#[derive(Debug, serde::Deserialize, serde::Serialize, PartialEq)]
+#[derive(Debug, serde::Deserialize, serde::Serialize, PartialEq, Clone)]
 pub enum AppState{
   EDITING,
   PLAYING
 }
 
-#[derive(Debug, serde::Deserialize, serde::Serialize)]
+#[derive(Debug, serde::Deserialize, serde::Serialize, Clone)]
 pub struct Config{
   pub _id: String,
   pub current_match: String,

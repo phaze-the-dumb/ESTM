@@ -15,8 +15,8 @@ pub async fn get(
 
   match config.current_state{
     AppState::PLAYING => {
-      let next_bracket = app.get_next_bracket(&config).await;
       let current_bracket = app.get_current_bracket(&config).await;
+      let next_bracket = app.get_next_bracket(config).await;
 
       if next_bracket.is_err(){
         return (
