@@ -35,6 +35,7 @@ pub async fn get(
     Json(json!({ "ok": true, "match": app.matches().get(id.unwrap()).await }))
   )
 }
+
 pub async fn options() -> impl IntoResponse{
   (
     StatusCode::OK,

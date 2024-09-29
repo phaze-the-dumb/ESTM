@@ -31,21 +31,21 @@ pub struct AppHandler {
 
 impl AppHandler{
   pub async fn new() -> Arc<Self>{
-    let db_controller = DBController::new();
-    let options = ClientOptions::parse(db_controller.get_connection_uri()).await.unwrap();
+    let db_controller = DBController::new(); // Create a new instance of the db controller
+    let options = ClientOptions::parse(db_controller.get_connection_uri()).await.unwrap(); // Create new Database connection options
 
-    let client = Client::with_options(options).unwrap();
-    let db = client.database("ESTM");
+    let client = Client::with_options(options).unwrap(); // Connect to the database using the connection options
+    let db = client.database("ESTM"); // Get the ESTM database
 
-    let auth_code: String = thread_rng()
+    let auth_code: String = thread_rng() // Generate a random sequence of 6 characters
       .sample_iter(&Alphanumeric)
       .take(6)
       .map(char::from)
       .collect();
 
-    println!("Authenticate using this code: {}", auth_code);
+    println!("Authenticate using this code: {}", auth_code); // Print this code to the terminal
 
-    Arc::new(AppHandler {
+    Arc::new(AppHandler { // Create a new instance of the AppHandler struct and wrap it in an arc so it is thread safe
       auth_code,
       auth: AuthenticationProvider::new(db.collection("Sessions")),
       matches: MatchController::new(db.collection("Matches")),
