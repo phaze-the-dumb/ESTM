@@ -7,8 +7,7 @@ import anime from 'animejs';
 import './Teams.css'
 import { Match } from '../../structs/Match';
 import { Team } from '../../structs/Team';
-
-// TODO: need to implement players into the teams
+import { Player } from '../../structs/Player';
 
 let Teams = () => {
   let natigate = useNavigate();
@@ -37,6 +36,10 @@ let Teams = () => {
   let dropdownOpen = false;
   let teams: Team[] = [];
 
+  let currentEditingTeam: Team | null = null;
+  let editingTempPlayer: Player | null = null;
+  // TODO: variables
+
   let selectedMatch: string | null = localStorage.getItem('selectedMatchTeamsList');
 
   window.LiveDataManager.teamSocketUpdate(( msg ) => {
@@ -63,6 +66,82 @@ let Teams = () => {
       case 'delete-match':
         teams = teams.filter(x => x.match_id !== msg.match._id);
 
+        break;
+      case 'rename-player':
+        let team2 = teams.find(x => x._id === msg.player._id);
+        if(!team2)return;
+
+        let player1 = team2.players.find(x => x._id === msg.player.player_id);
+        if(player1)player1.name = msg.player.name;
+
+        let el1 = document.querySelector(`#player-name-label-${msg.player._id}-${msg.player.player_id}`);
+        if(el1)el1.innerHTML = msg.player.name;
+
+        break;
+      case 'remove-player':
+        let team3 = teams.find(x => x._id === msg.player._id);
+        if(!team3)return;
+
+        team3.players = team3.players.filter(x => x._id !== msg.player.player_id);
+
+        let el = document.querySelector(`#player-name-label-${msg.player._id}-${msg.player.player_id}`);
+        if(el)el.remove();
+
+        break;
+      case 'add-player':
+        let team1 = teams.find(x => x._id === msg.player._id);
+        if(!team1)return;
+
+        let p = new Player();
+
+        p._id = msg.player.player_id;
+        p.name = msg.player.name;
+
+        team1.players.push(p)
+        teamsListContainer[msg.player._id].children[1].appendChild(<div id={ `player-name-label-${msg.player._id}-${msg.player.player_id}` }>{ msg.player.name }</div> as Node);
+
+        teamEditPlayers.appendChild(<div>
+          <input style={{ display: 'none' }} value={ msg.player.name } onKeyUp={( e ) => {
+            if(e.key === "Enter"){
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement!.lastElementChild!.setAttribute("style", "display: block;");
+            }
+          }} onChange={( e ) => {
+            e.currentTarget.nextElementSibling!.innerHTML = e.target.value;
+  
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.parentElement!.lastElementChild!.setAttribute("style", "display: block;");
+  
+            fetch(window.ENDPOINT + '/api/v1/teams/player', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${cooki.getStore('token')}`
+              },
+              body: JSON.stringify({
+                id: currentEditingTeam!._id,
+                player_id: msg.player.player_id,
+                name: e.target.value
+              })
+            })
+              .then(data => data.json())
+              .then(data => {
+                if(!data.ok){
+                  alert("Could not update player name: " + data.error);
+                  return;
+                }
+              })
+              .catch(e => {
+                alert("Could not update player name: " + e);
+              })
+          }}></input>
+          <div onClick={( e ) => {
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.parentElement!.firstElementChild!.setAttribute("style", "display: inline-block;");
+          }}>
+            { msg.player.name }
+          </div>
+        </div> as Node);
         break;
     }
   })
@@ -159,8 +238,50 @@ let Teams = () => {
 
     teamEditPlayers.innerHTML = '';
 
+    currentEditingTeam = team;
+
     team.players.forEach(p => {
-      teamEditPlayers.appendChild(<div class="team-player">{ p.name }</div> as HTMLElement);
+      teamEditPlayers.appendChild(<div>
+        <input style={{ display: 'none' }} value={ p.name } onKeyUp={( e ) => {
+          if(e.key === "Enter"){
+            e.currentTarget.style.display = 'none';
+            e.currentTarget.parentElement!.lastElementChild!.setAttribute("style", "display: block;");
+          }
+        }} onChange={( e ) => {
+          e.currentTarget.nextElementSibling!.innerHTML = e.target.value;
+
+          e.currentTarget.style.display = 'none';
+          e.currentTarget.parentElement!.lastElementChild!.setAttribute("style", "display: block;");
+
+          fetch(window.ENDPOINT + '/api/v1/teams/player', {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${cooki.getStore('token')}`
+            },
+            body: JSON.stringify({
+              id: currentEditingTeam!._id,
+              player_id: p._id,
+              name: e.target.value
+            })
+          })
+            .then(data => data.json())
+            .then(data => {
+              if(!data.ok){
+                alert("Could not update player name: " + data.error);
+              }
+            })
+            .catch(e => {
+              alert("Could not update player name: " + e);
+            })
+        }}></input>
+        <div onClick={( e ) => {
+          e.currentTarget.style.display = 'none';
+          e.currentTarget.parentElement!.firstElementChild!.setAttribute("style", "display: inline-block;");
+        }}>
+          { p.name }
+        </div>
+      </div> as Node);
     })
 
     anime({
@@ -375,6 +496,32 @@ let Teams = () => {
     });
   }
 
+  let submitTempPlayer = () => {
+    document.querySelector("#temp-player-editor")!.remove();
+
+    fetch(window.ENDPOINT + '/api/v1/teams/player', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${cooki.getStore('token')}`
+      },
+      body: JSON.stringify({
+        id: currentEditingTeam!._id,
+        name: editingTempPlayer!.name
+      })
+    })
+      .then(data => data.json())
+      .then(data => {
+        if(!data.ok){
+          alert(data.error);
+          return;
+        }
+      })
+      .catch(e => {
+        console.error(e);
+      })
+  }
+
   return (
     <>
       <div class="teams-header"><h1>Teams</h1></div>
@@ -461,7 +608,17 @@ let Teams = () => {
               <input class="team-title-edit" ref={teamTitleEdit!} />
             </div><br /><br />
 
-            <h3>Players</h3>
+            <h3>Players <div class="add-team-player" onClick={() => {
+              // TODO: 0
+              editingTempPlayer = new Player();
+
+              teamEditPlayers.appendChild(<div id="temp-player-editor">
+                <input onChange={( el ) => {
+                  editingTempPlayer!.name = el.target.value;
+                  submitTempPlayer();
+                }}></input>
+              </div> as HTMLDivElement);
+            }}>+</div></h3>
             <div ref={teamEditPlayers!}>
 
             </div><br /><br />

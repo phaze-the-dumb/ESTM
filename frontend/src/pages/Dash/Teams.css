@@ -209,3 +209,10 @@
   text-align: center;
   padding: 10px 50px;
 }
+
+.add-team-player{
+  display: inline-block;
+  font-weight: 400;
+  cursor: pointer;
+  user-select: none;
+}

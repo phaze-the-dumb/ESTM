@@ -1,8 +1,8 @@
 use bson::doc;
-use mongodb::Collection;
+use mongodb::{options::UpdateModifications, Collection};
 use nanoid::nanoid;
 
-use crate::structs::team::Team;
+use crate::{api::v1::teams::player, structs::team::Team};
 
 #[derive(Debug, Clone)]
 pub struct TeamManager{
@@ -34,6 +34,31 @@ impl TeamManager{
 
   pub async fn rename( &self, id: String, name: String ){
     self.teams.update_one(doc! { "_id": id }, doc! { "$set": { "name": name } }).await.unwrap();
+  }
+
+  pub async fn rename_player( &self, id: String, player_id: String, name: String ){
+    self.teams.update_one(
+      doc! { "_id": id },
+      doc! { "$set": { "players.$[id].name": name } }
+    ).array_filters([ doc! { "id._id": { "$eq": player_id } } ]).await.unwrap();
+  }
+
+  pub async fn remove_player( &self, id: String, player_id: String ){
+    self.teams.update_one(
+      doc! { "_id": id },
+      doc! { "$pull": { "players": { "_id": player_id } } }
+    ).await.unwrap();
+  }
+
+  pub async fn add_player( &self, id: String, name: String ) -> String{
+    let player_id = nanoid!();
+
+    self.teams.update_one(
+      doc! { "_id": id },
+      doc! { "$push": { "players": { "_id": player_id.clone(), "name": name } } }
+    ).await.unwrap();
+
+    player_id
   }
 
   pub async fn delete( &self, id: String ) -> String{

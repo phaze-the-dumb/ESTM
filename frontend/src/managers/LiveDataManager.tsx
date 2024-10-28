@@ -59,6 +59,15 @@ class LiveDataManager{
           if(window.BracketDiagramManager)window.BracketDiagramManager.fetchData(window.MatchManager.selected());
 
           break;
+        case 'remove-player':
+          this._teamsSocketUpdate(json);
+          break;
+        case 'rename-player':
+          this._teamsSocketUpdate(json);
+          break;
+        case 'add-player':
+          this._teamsSocketUpdate(json);
+          break;
         case 'start-match':
           window.MatchManager.startMatch();
           break;

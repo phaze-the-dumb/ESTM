@@ -16,7 +16,7 @@ class Team{
         break;
       }
 
-      div.appendChild(<div>{team.players[i].name}</div> as HTMLElement);
+      div.appendChild(<div id={ `player-name-label-${team._id}-${team.players[i]._id}` }>{team.players[i].name}</div> as HTMLElement);
     }
 
     return div;

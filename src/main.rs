@@ -74,6 +74,10 @@ async fn start_webserver( handle: Arc<AppHandler> ){
     .route("/api/v1/teams/rename", options(api::v1::teams::rename::options))
     .route("/api/v1/teams/rename", put(api::v1::teams::rename::put)) // Rename a team
 
+    .route("/api/v1/teams/player", options(api::v1::teams::player::options))
+    .route("/api/v1/teams/player", put(api::v1::teams::player::put)) // Rename a player
+    .route("/api/v1/teams/player", post(api::v1::teams::player::post)) // Create a player
+
     .route("/api/v1/teams/delete", options(api::v1::teams::delete::options))
     .route("/api/v1/teams/delete", delete(api::v1::teams::delete::delete)) // Delete a team
 
@@ -96,5 +100,7 @@ async fn start_webserver( handle: Arc<AppHandler> ){
     .layer(Extension(handle)); // Embed the "AppHandler" struct into axum so all routes have access to it
 
   let listener = tokio::net::TcpListener::bind("0.0.0.0:8080").await.unwrap(); // Create a TCP listener on port 8080
+  println!("Control panel available on: http://127.0.0.1:8080");
+
   axum::serve(listener, app).await.unwrap(); // Tell axum to use this listener
 }
