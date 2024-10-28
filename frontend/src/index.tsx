@@ -11,7 +11,7 @@ declare global{
   }
 }
 
-window.ENDPOINT = 'http://127.0.0.1:8080'; // Set the endpoint value to the backend url ( Leave blank in prod builds so it uses the base url of the site)
+window.ENDPOINT = ''; // Set the endpoint value to the backend url ( Leave blank in prod builds so it uses the base url of the site)
 
 // Setup the CacheManager instance
 CacheManager.Init();

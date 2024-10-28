@@ -38,7 +38,6 @@ let Teams = () => {
 
   let currentEditingTeam: Team | null = null;
   let editingTempPlayer: Player | null = null;
-  // TODO: variables
 
   let selectedMatch: string | null = localStorage.getItem('selectedMatchTeamsList');
 
@@ -609,7 +608,6 @@ let Teams = () => {
             </div><br /><br />
 
             <h3>Players <div class="add-team-player" onClick={() => {
-              // TODO: 0
               editingTempPlayer = new Player();
 
               teamEditPlayers.appendChild(<div id="temp-player-editor">
