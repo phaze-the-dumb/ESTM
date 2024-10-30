@@ -68,6 +68,7 @@ let Login = () => {
         cooki.setStore('token-id', data.id);
 
         window.MatchManager.fetchData();
+        window.LiveDataManager.sendHello();
 
         navigate('/dash');
       })

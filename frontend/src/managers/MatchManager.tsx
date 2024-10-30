@@ -209,27 +209,6 @@ class MatchManager{
   }
 
   public selectMatch( id: string ){
-    if(this._selectedMatchData)
-      this._matchList[this._selectedMatchData._id].classList.remove('match-selected');
-
-    if(
-      this._selectedMatchData &&
-      this._selectedMatchData._id === id
-    )
-      this._selectedMatchData = null;
-    else
-      this._selectedMatchData = this._matches.find(x => x._id === id) || null;
-
-    if(this._selectedMatchData){
-      this._matchStatusText.innerText = `Selected Match: ${this._selectedMatchData.name}`
-      this._matchList[id].classList.add('match-selected');
-    } else{
-      this._matchStatusText.innerText = `No Match Selected.`
-    }
-
-    if(this._matchChangeCB)this._matchChangeCB(this._selectedMatchData);
-    if(this._bracketsHookCB)this._bracketsHookCB(this._selectedMatchData);
-
     fetch(window.ENDPOINT + '/api/v1/matches/select', {
       method: 'PUT',
       headers: {
@@ -242,6 +221,27 @@ class MatchManager{
       .then(data => {
         if(!data.ok)
           return alert(data.error);
+
+        if(this._selectedMatchData)
+          this._matchList[this._selectedMatchData._id].classList.remove('match-selected');
+    
+        if(
+          this._selectedMatchData &&
+          this._selectedMatchData._id === id
+        )
+          this._selectedMatchData = null;
+        else
+          this._selectedMatchData = this._matches.find(x => x._id === id) || null;
+    
+        if(this._selectedMatchData){
+          this._matchStatusText.innerText = `Selected Match: ${this._selectedMatchData.name}`
+          this._matchList[id].classList.add('match-selected');
+        } else{
+          this._matchStatusText.innerText = `No Match Selected.`
+        }
+    
+        if(this._matchChangeCB)this._matchChangeCB(this._selectedMatchData);
+        if(this._bracketsHookCB)this._bracketsHookCB(this._selectedMatchData);
       })
   }
 
