@@ -1,8 +1,8 @@
 use bson::doc;
-use mongodb::{options::UpdateModifications, Collection};
+use mongodb::Collection;
 use nanoid::nanoid;
 
-use crate::{api::v1::teams::player, structs::team::Team};
+use crate::structs::team::Team;
 
 #[derive(Debug, Clone)]
 pub struct TeamManager{
@@ -18,7 +18,7 @@ impl TeamManager{
     let _id = nanoid!(); // Generate a random id
 
     // Create a new team and insert it into the database
-    self.teams.insert_one(Team { _id: _id.clone(), name, players: Vec::new(), match_id }).await.unwrap();
+    self.teams.insert_one(Team { _id: _id.clone(), name, players: Vec::new(), colour: "#000000".to_owned(), match_id }).await.unwrap();
     _id
   }
 
@@ -76,5 +76,9 @@ impl TeamManager{
   pub async fn count( &self, match_id: String ) -> u8{
     // Get mongo to count every team in the database with the provided match_id
     self.teams.count_documents(doc! { "match_id": match_id }).await.unwrap() as u8
+  }
+
+  pub async fn set_colour( &self, id: String, colour: String ){
+    self.teams.update_one(doc! { "_id": id }, doc! { "$set": { "colour": colour } }).await.unwrap();
   }
 }

@@ -13,6 +13,7 @@ class LiveDataManager{
   private _sentHello = false;
 
   private _teamsSocketUpdate: ( msg: any ) => void = () => {};
+  private _displaySocketUpdate: ( msg: any ) => void = () => {};
 
   private constructor(){
     this._ws = new WebSocket(window.ENDPOINT + '/api/v1/live');
@@ -28,6 +29,8 @@ class LiveDataManager{
       let json = JSON.parse(e.data);
       console.log(json);
 
+      this._displaySocketUpdate(json);
+
       switch(json.type){
         case 'select-match':
           window.MatchManager.selectMatchDisplay(json.match._id);
@@ -37,12 +40,15 @@ class LiveDataManager{
           break;
         case 'delete-match':
           window.MatchManager.deleteDisplay(json.match._id);
-          if(window.BracketDiagramManager)window.BracketDiagramManager.fetchData(window.MatchManager.selected());
 
+          if(window.BracketDiagramManager)window.BracketDiagramManager.fetchData(window.MatchManager.selected());
           break;
         case 'create-match':
           let match = new Match(json.match._id, json.match.name);
           window.MatchManager.addMatch(match);
+          break;
+        case 'team-colour':
+          this._teamsSocketUpdate(json);
           break;
         case 'create-team':
           this._teamsSocketUpdate(json);
@@ -89,6 +95,10 @@ class LiveDataManager{
 
   public teamSocketUpdate( cb: ( msg: any ) => void ){
     this._teamsSocketUpdate = cb;
+  }
+
+  public displaySocketUpdate( cb: ( msg: any ) => void ){
+    this._displaySocketUpdate = cb;
   }
 
   public sendHello(){

@@ -89,12 +89,12 @@ class MatchManager{
     this._setIsPlaying(false);
   }
 
-  public setNextTeam1And2( team1: Team, team2: Team){
+  public setNextTeam1And2( team1: Team, team2: Team ){
     this._setPlayingNextTeam1(team1);
     this._setPlayingNextTeam2(team2);
   }
 
-  public setTeam1And2( team1: Team, team2: Team){
+  public setTeam1And2( team1: Team, team2: Team ){
     this._setPlayingTeam1(team1);
     this._setPlayingTeam2(team2);
 
@@ -209,6 +209,17 @@ class MatchManager{
   }
 
   public selectMatch( id: string ){
+    if(this._selectedMatchData)
+      this._matchList[this._selectedMatchData._id].classList.remove('match-selected');
+
+    if(
+      this._selectedMatchData &&
+      this._selectedMatchData._id === id
+    )
+      this._selectedMatchData = null;
+    else
+      this._selectedMatchData = this._matches.find(x => x._id === id) || null;
+
     fetch(window.ENDPOINT + '/api/v1/matches/select', {
       method: 'PUT',
       headers: {
@@ -222,17 +233,6 @@ class MatchManager{
         if(!data.ok)
           return alert(data.error);
 
-        if(this._selectedMatchData)
-          this._matchList[this._selectedMatchData._id].classList.remove('match-selected');
-    
-        if(
-          this._selectedMatchData &&
-          this._selectedMatchData._id === id
-        )
-          this._selectedMatchData = null;
-        else
-          this._selectedMatchData = this._matches.find(x => x._id === id) || null;
-    
         if(this._selectedMatchData){
           this._matchStatusText.innerText = `Selected Match: ${this._selectedMatchData.name}`
           this._matchList[id].classList.add('match-selected');

@@ -11,7 +11,7 @@ pub async fn post(
     return (
       StatusCode::BAD_REQUEST,
       [
-        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
         ( header::ACCESS_CONTROL_ALLOW_METHODS, "POST" ),
         ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type" )
       ],
@@ -24,7 +24,7 @@ pub async fn post(
     return (
       StatusCode::UNAUTHORIZED,
       [
-        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
         ( header::ACCESS_CONTROL_ALLOW_METHODS, "POST" ),
         ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type" )
       ],
@@ -37,7 +37,7 @@ pub async fn post(
   (
     StatusCode::OK,
     [
-      ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+      ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
       ( header::ACCESS_CONTROL_ALLOW_METHODS, "POST" ),
       ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type" )
     ],
@@ -49,7 +49,7 @@ pub async fn options() -> impl IntoResponse{
   (
     StatusCode::OK,
     [
-      ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+      ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
       ( header::ACCESS_CONTROL_ALLOW_METHODS, "POST" ),
       ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Content-Type" )
     ],

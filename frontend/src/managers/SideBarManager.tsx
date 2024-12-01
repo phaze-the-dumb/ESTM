@@ -17,6 +17,7 @@ class SideBarManager{
   private closeCallback: () => void;
   private openCallback: () => void;
   private contentChangeCallback: ( buttons: SideBarButton[] ) => void;
+  private hideallCallback: () => void;
 
   private _open: boolean = false;
   private _buttonSetId: string = "";
@@ -35,6 +36,10 @@ class SideBarManager{
     this.closeCallback();
   }
 
+  public hideWebUI(){
+    this.hideallCallback();
+  }
+
   public setButtons( buttons: SideBarButton[], buttonSetId: string ){
     if(buttonSetId !== this._buttonSetId){
       this._buttonSetId = buttonSetId;
@@ -45,22 +50,26 @@ class SideBarManager{
   private constructor(
     closeCallback: () => void,
     openCallback: () => void,
-    contentChangeCallback: ( buttons: SideBarButton[] ) => void
+    contentChangeCallback: ( buttons: SideBarButton[] ) => void,
+    hideallCallback: () => void,
   ){
     this.closeCallback = closeCallback;
     this.openCallback = openCallback;
     this.contentChangeCallback = contentChangeCallback;
+    this.hideallCallback = hideallCallback;
   }
 
   public static Init(
     closeCallback: () => void,
     openCallback: () => void,
-    contentChangeCallback: ( buttons: SideBarButton[] ) => void
+    contentChangeCallback: ( buttons: SideBarButton[] ) => void,
+    hideallCallback: () => void,
   ){
     window.SideBarManager = new SideBarManager(
       closeCallback,
       openCallback,
-      contentChangeCallback
+      contentChangeCallback,
+      hideallCallback
     ); // When "Init" is called create a new instance of SideBarManager and fill in "window.SideBarManager"
   }
 }

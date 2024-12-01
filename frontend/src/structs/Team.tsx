@@ -5,6 +5,7 @@ class Team{
   public name!: string;
   public match_id!: string;
   public players!: Player[];
+  public colour!: string;
 
   public static formatPlayerList( team: Team ): HTMLDivElement{
     let div = document.createElement('div');

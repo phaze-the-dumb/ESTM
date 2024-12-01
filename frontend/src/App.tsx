@@ -68,6 +68,21 @@ let App = ( props: any ) => {
         buttons.forEach(btn => {
           sidebarButtons.appendChild(btn.el);
         })
+      },
+      () => {
+        sidebar.style.display = 'none';
+        topbar.style.display = 'none';
+
+        content.style.left = '0';
+        content.style.top = '0';
+
+        content.style.width = '100%';
+        content.style.height = '100%';
+
+        content.style.background = 'rgba(0, 0, 0, 0)';
+
+        content.classList.remove('content');
+        document.body.style.background = '#000';
       }
     );
   })

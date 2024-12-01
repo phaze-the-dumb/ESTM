@@ -24,7 +24,7 @@ pub async fn put(
       (
         StatusCode::OK,
         [
-          ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+          ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
           ( header::ACCESS_CONTROL_ALLOW_METHODS, "PUT" ),
           ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization,Content-Type" )
         ],
@@ -35,7 +35,7 @@ pub async fn put(
       (
         StatusCode::OK,
         [
-          ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+          ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
           ( header::ACCESS_CONTROL_ALLOW_METHODS, "PUT" ),
           ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization,Content-Type" )
         ],
@@ -48,7 +48,7 @@ pub async fn options() -> impl IntoResponse{
   (
     StatusCode::OK,
     [
-      ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+      ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
       ( header::ACCESS_CONTROL_ALLOW_METHODS, "PUT" ),
       ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization,Content-Type" )
     ],

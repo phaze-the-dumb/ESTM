@@ -78,6 +78,9 @@ async fn start_webserver( handle: Arc<AppHandler> ){
     .route("/api/v1/teams/player", put(api::v1::teams::player::put)) // Rename a player
     .route("/api/v1/teams/player", post(api::v1::teams::player::post)) // Create a player
 
+    .route("/api/v1/teams/colour", options(api::v1::teams::colour::options))
+    .route("/api/v1/teams/colour", put(api::v1::teams::colour::put)) // Rename a player
+
     .route("/api/v1/teams/delete", options(api::v1::teams::delete::options))
     .route("/api/v1/teams/delete", delete(api::v1::teams::delete::delete)) // Delete a team
 

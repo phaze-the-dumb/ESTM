@@ -1,4 +1,4 @@
-import {createSignal, Match, onMount, Show, Switch} from "solid-js";
+import {createSignal, For, Match, onMount, Show, Switch} from "solid-js";
 import './Dash.css'
 import * as cooki from '../managers/CookiManager';
 import { useNavigate } from "@solidjs/router";
@@ -135,6 +135,13 @@ let Dash = () => {
                     <div class="column">
                       <div class="row">
                         <div class="match-stats-waiting">{ window.MatchManager.playingTeam1()!.name }</div>
+                        <div>
+                        <For each={window.MatchManager.playingTeam1()!.players}>
+                          {( player ) =>
+                            <div>{ player.name }</div>
+                          }
+                        </For>
+                      </div>
 
                         <div class="button" onClick={() => {
                           fetch(window.ENDPOINT + '/api/v1/brackets/winner', {
@@ -156,6 +163,13 @@ let Dash = () => {
                       </div>
                       <div class="row">
                         <div class="match-stats-waiting">{ window.MatchManager.playingTeam2()!.name }</div>
+                        <div>
+                        <For each={window.MatchManager.playingTeam2()!.players}>
+                          {( player ) =>
+                            <div>{ player.name }</div>
+                          }
+                        </For>
+                      </div>
 
                         <div class="button" onClick={() => {
                         fetch(window.ENDPOINT + '/api/v1/brackets/winner', {
@@ -246,10 +260,24 @@ let Dash = () => {
                     <div class="row">
                       <div class="match-stats-waiting-smol">Team 1</div>
                       <div class="match-stats-waiting">{ window.MatchManager.playingNextTeam1()!.name }</div>
+                      <div>
+                        <For each={window.MatchManager.playingNextTeam1()!.players}>
+                          {( player ) =>
+                            <div>{ player.name }</div>
+                          }
+                        </For>
+                      </div>
                     </div>
                     <div class="row">
                       <div class="match-stats-waiting-smol">Team 2</div>
                       <div class="match-stats-waiting">{ window.MatchManager.playingNextTeam2()!.name }</div>
+                      <div>
+                        <For each={window.MatchManager.playingNextTeam2()!.players}>
+                          {( player ) =>
+                            <div>{ player.name }</div>
+                          }
+                        </For>
+                      </div>
                     </div>
                   </div>
 

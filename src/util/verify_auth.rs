@@ -12,7 +12,7 @@ pub async fn verify_auth( headers: &HeaderMap, app: &Arc<AppHandler> ) -> Result
     return Err((
       StatusCode::UNAUTHORIZED,
       [
-        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
         ( header::ACCESS_CONTROL_ALLOW_METHODS, "GET" ),
         ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization" )
       ],
@@ -29,7 +29,7 @@ pub async fn verify_auth( headers: &HeaderMap, app: &Arc<AppHandler> ) -> Result
     return Err((
       StatusCode::UNAUTHORIZED,
       [
-        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:5173" ),
+        ( header::ACCESS_CONTROL_ALLOW_ORIGIN, "*" ),
         ( header::ACCESS_CONTROL_ALLOW_METHODS, "GET" ),
         ( header::ACCESS_CONTROL_ALLOW_HEADERS, "Authorization" )
       ],

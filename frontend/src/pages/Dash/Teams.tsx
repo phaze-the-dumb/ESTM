@@ -31,6 +31,8 @@ let Teams = () => {
   let teamEditPlayers: HTMLDivElement;
   let teamEditContainer: HTMLDivElement;
 
+  let teamColourInput: HTMLInputElement;
+
   let addTeamButton: HTMLDivElement;
 
   let dropdownOpen = false;
@@ -43,6 +45,12 @@ let Teams = () => {
 
   window.LiveDataManager.teamSocketUpdate(( msg ) => {
     switch(msg.type){
+      case 'team-colour':
+        let team4 = teams.find(x => x._id === msg.team._id);
+        if(!team4)return;
+
+        team4.colour = msg.team.colour;
+        break;
       case 'rename-team':
         let team = teams.find(x => x._id === msg.team._id);
         if(!team)return;
@@ -235,6 +243,7 @@ let Teams = () => {
     teamTitle.innerHTML = team.name;
     teamTitleEdit.value = team.name;
 
+    teamColourInput.value = team.colour;
     teamEditPlayers.innerHTML = '';
 
     currentEditingTeam = team;
@@ -618,8 +627,33 @@ let Teams = () => {
               </div> as HTMLDivElement);
             }}>+</div></h3>
             <div ref={teamEditPlayers!}>
+            </div>
+            <br />
+            <input type="color" ref={teamColourInput!} onChange={( el ) => {
+              fetch(window.ENDPOINT + '/api/v1/teams/colour', {
+                method: 'PUT',
+                headers: {
+                  Authorization: `Bearer ${cooki.getStore('token')}`,
+                  'Content-Type': 'application/json',
+                  'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                  colour: el.currentTarget.value,
+                  id: selectedTeamId
+                })
+              })
+                .then(data => data.json())
+                .then(data => {
+                  if(!data.ok){
+                    return alert("Error: " + data.error);
+                  }
+                })
+                .catch(e => {
+                  alert(e);
+                })
+            }}></input>
 
-            </div><br /><br />
+            <br /><br />
 
             <div style={{ display: window.MatchManager.isPlaying() ? 'none' : 'block' }}>
               <div class="button-danger" onClick={() => window.ConfirmationManager.show(
