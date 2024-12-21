@@ -101,6 +101,10 @@ class LiveDataManager{
     this._displaySocketUpdate = cb;
   }
 
+  public reset(){
+    this._sentHello = false;
+  }
+
   public sendHello(){
     if(this._sentHello)return;
     this._sentHello = true;
