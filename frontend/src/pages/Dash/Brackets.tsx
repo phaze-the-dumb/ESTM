@@ -48,7 +48,7 @@ let Brackets = () => {
         await window.MatchManager.fetchData();
 
         setTimeout(() => {
-          window.BracketDiagramManager.start(canvas);
+          window.BracketDiagramManager.start(canvas!);
         }, 250)
       })
       .catch(console.error);

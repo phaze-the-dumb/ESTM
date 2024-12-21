@@ -49,13 +49,13 @@ let Login = () => {
       .then(data => data.json())
       .then(data => {
         if(!data.ok){
-          anime.set(errorContainer, { opacity: 0, translateX: '-50%', translateY: '100px', rotate: '10deg' });
+          anime.set(errorContainer!, { opacity: 0, translateX: '-50%', translateY: '100px', rotate: '10deg' });
 
-          errorContainer.style.display = 'flex';
-          errorContainer.innerHTML = data.error;
+          errorContainer!.style.display = 'flex';
+          errorContainer!.innerHTML = data.error;
 
           anime({
-            targets: errorContainer,
+            targets: errorContainer!,
             opacity: 1,
             translateY: '145px',
             rotate: '0deg'
@@ -73,13 +73,13 @@ let Login = () => {
         navigate('/dash');
       })
       .catch(e => {
-        anime.set(errorContainer, { opacity: 0, translateX: '-50%', translateY: '100px', rotate: '10deg' });
+        anime.set(errorContainer!, { opacity: 0, translateX: '-50%', translateY: '100px', rotate: '10deg' });
 
-        errorContainer.style.display = 'flex';
-        errorContainer.innerHTML = e.toString();
+        errorContainer!.style.display = 'flex';
+        errorContainer!.innerHTML = e.toString();
 
         anime({
-          targets: errorContainer,
+          targets: errorContainer!,
           opacity: 1,
           translateY: '145px',
           rotate: '0deg'

@@ -23,13 +23,13 @@ let Matches = () => {
   let matchTitleEdit: HTMLInputElement;
 
   let matchCreateNameSubmit = () => {
-    let name = matchCreateNameInput.value;
+    let name = matchCreateNameInput!.value;
     if(matchCreateNameInputSubmitted || name.trim().length === 0)return;
 
     matchCreateNameInputSubmitted = true;
-    matchCreateNameInput.disabled = true;
+    matchCreateNameInput!.disabled = true;
 
-    matchCreateNameInputSubmit.innerText = 'Loading...';
+    matchCreateNameInputSubmit!.innerText = 'Loading...';
 
     console.log(name);
 
@@ -51,18 +51,18 @@ let Matches = () => {
         window.MatchManager.addMatch(new Match(data._id, name));
 
         anime({
-          targets: matchCreateContainer,
+          targets: matchCreateContainer!,
           opacity: 0,
           easing: 'easeInOutQuad',
           duration: 100,
           complete: () => {
-            matchCreateNameInput.value = '';
+            matchCreateNameInput!.value = '';
     
-            matchCreateContainer.style.display = 'none';
-            matchCreateNameInputSubmit.innerText = 'Create Match';
+            matchCreateContainer!.style.display = 'none';
+            matchCreateNameInputSubmit!.innerText = 'Create Match';
     
             matchCreateNameInputSubmitted = false;
-            matchCreateNameInput.disabled = false;
+            matchCreateNameInput!.disabled = false;
           }
         });
       })
@@ -73,10 +73,10 @@ let Matches = () => {
   }
 
   let addMatch = () => {
-    matchCreateContainer.style.display = 'block';
+    matchCreateContainer!.style.display = 'block';
 
     anime({
-      targets: matchCreateContainer,
+      targets: matchCreateContainer!,
       opacity: 1,
       easing: 'easeInOutQuad',
       duration: 100
@@ -84,18 +84,18 @@ let Matches = () => {
   }
 
   onMount(() => {
-    matchCreateNameInput.onchange = matchCreateNameSubmit;
-    matchCreateNameInputSubmit.onclick = matchCreateNameSubmit;
+    matchCreateNameInput!.onchange = matchCreateNameSubmit;
+    matchCreateNameInputSubmit!.onclick = matchCreateNameSubmit;
 
-    matchCreateBackButton.onclick = () => {
+    matchCreateBackButton!.onclick = () => {
       anime({
-        targets: matchCreateContainer,
+        targets: matchCreateContainer!,
         opacity: 0,
         easing: 'easeInOutQuad',
         duration: 100,
         complete: () => {
-          matchCreateNameInput.value = '';
-          matchCreateContainer.style.display = 'none';
+          matchCreateNameInput!.value = '';
+          matchCreateContainer!.style.display = 'none';
         }
       });
     }
@@ -136,32 +136,32 @@ let Matches = () => {
       .catch(console.error);
 
     let selectedMatch: Match | null = null;
-    matchTitleEdit.style.display = 'none';
+    matchTitleEdit!.style.display = 'none';
 
-    matchTitle.onclick = () => {
+    matchTitle!.onclick = () => {
       if(!selectedMatch)return;
 
-      matchTitleEdit.style.display = 'inline-block';
-      matchTitle.style.display = 'none';
+      matchTitleEdit!.style.display = 'inline-block';
+      matchTitle!.style.display = 'none';
 
-      matchTitleEdit.select();
+      matchTitleEdit!.select();
     }
 
-    matchTitleEdit.onchange = () => {
-      matchTitleEdit.style.display = 'none';
-      matchTitle.style.display = 'inline-block';
+    matchTitleEdit!.onchange = () => {
+      matchTitleEdit!.style.display = 'none';
+      matchTitle!.style.display = 'inline-block';
 
-      window.MatchManager.renameSelected(matchTitleEdit.value);
-      matchTitle.innerHTML = matchTitleEdit.value;
+      window.MatchManager.renameSelected(matchTitleEdit!.value);
+      matchTitle!.innerHTML = matchTitleEdit!.value;
     }
 
-    matchTitleEdit.onkeyup = ( e ) => {
+    matchTitleEdit!.onkeyup = ( e ) => {
       if(e.key === 'Enter'){
-        matchTitleEdit.style.display = 'none';
-        matchTitle.style.display = 'inline-block';
+        matchTitleEdit!.style.display = 'none';
+        matchTitle!.style.display = 'inline-block';
 
-        window.MatchManager.renameSelected(matchTitleEdit.value);
-        matchTitle.innerHTML = matchTitleEdit.value;
+        window.MatchManager.renameSelected(matchTitleEdit!.value);
+        matchTitle!.innerHTML = matchTitleEdit!.value;
       }
     }
 
@@ -169,24 +169,24 @@ let Matches = () => {
       selectedMatch = match;
 
       if(match === null){
-        matchTitle.innerHTML = 'No Match Selected.';
-        matchTitleEdit.value = 'Error.';
+        matchTitle!.innerHTML = 'No Match Selected.';
+        matchTitleEdit!.value = 'Error.';
 
-        matchTitleEdit.style.display = 'none';
-        matchTitle.style.display = 'inline-block';
+        matchTitleEdit!.style.display = 'none';
+        matchTitle!.style.display = 'inline-block';
 
-        matchContainer.style.display = 'none';
+        matchContainer!.style.display = 'none';
 
         return;
       }
 
-      matchTitle.innerHTML = selectedMatch!.name;
-      matchTitleEdit.value = selectedMatch!.name;
+      matchTitle!.innerHTML = selectedMatch!.name;
+      matchTitleEdit!.value = selectedMatch!.name;
 
-      matchContainer.style.display = 'block';
+      matchContainer!.style.display = 'block';
 
-      matchTitleEdit.style.display = 'none';
-      matchTitle.style.display = 'inline-block';
+      matchTitleEdit!.style.display = 'none';
+      matchTitle!.style.display = 'inline-block';
     })
   })
 

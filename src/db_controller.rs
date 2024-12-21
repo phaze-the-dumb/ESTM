@@ -15,8 +15,8 @@ impl DBController{
     let port: u16 = 27021;
 
     // Start MongoDB as a child process, this will make sure it is always running when we want it to be.
-    Command::new("C:\\Program Files\\MongoDB\\Server\\7.0\\bin\\mongod.exe")
-      .current_dir("C:\\Program Files\\MongoDB\\Server\\7.0\\bin")
+    Command::new("C:\\Program Files\\MongoDB\\Server\\8.0\\bin\\mongod.exe")
+      .current_dir("C:\\Program Files\\MongoDB\\Server\\8.0\\bin")
       .arg(format!("--dbpath={}", env::current_dir().unwrap().join("dbdata").to_str().unwrap())) // Tell mongo to use our data path
       .arg(format!("--port={}", port)) // Tell mongo to use the port that we have assigned to it
       .arg("--bind_ip=127.0.0.1") // Tell mongo to listen on 127.0.0.1 meaning only this local machine can access it

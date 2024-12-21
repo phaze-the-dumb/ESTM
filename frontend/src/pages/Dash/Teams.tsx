@@ -107,7 +107,7 @@ let Teams = () => {
         team1.players.push(p)
         teamsListContainer[msg.player._id].children[1].appendChild(<div id={ `player-name-label-${msg.player._id}-${msg.player.player_id}` }>{ msg.player.name }</div> as Node);
 
-        teamEditPlayers.appendChild(<div>
+        teamEditPlayers!.appendChild(<div>
           <input style={{ display: 'none' }} value={ msg.player.name } onKeyUp={( e ) => {
             if(e.key === "Enter"){
               e.currentTarget.style.display = 'none';
@@ -158,11 +158,11 @@ let Teams = () => {
 
     let name: HTMLDivElement;
 
-    teamsList.appendChild(<div class="team" ref={( el ) => teamsListContainer[team._id] = el}>
+    teamsList!.appendChild(<div class="team" ref={( el ) => teamsListContainer[team._id] = el}>
       <div class="team-name" ref={name!}>{ team.name }</div>
       { Team.formatPlayerList(team) }
       <div class="button" onClick={() => {
-        team.name = name.innerText;
+        team.name = name!.innerText;
         teamEditor(team)
       }}>Edit</div>
     </div> as HTMLElement);
@@ -173,14 +173,14 @@ let Teams = () => {
     console.log(match);
 
     if(match){
-      dropdownCurrent.innerText = match.name;
-      addTeamButton.style.display = 'block';
+      dropdownCurrent!.innerText = match.name;
+      addTeamButton!.style.display = 'block';
 
       localStorage.setItem('selectedMatchTeamsList', match._id);
       selectedMatch = match._id;
     } else{
-      dropdownCurrent.innerText = 'No Selected Match';
-      addTeamButton.style.display = 'none';
+      dropdownCurrent!.innerText = 'No Selected Match';
+      addTeamButton!.style.display = 'none';
 
       localStorage.removeItem('selectedMatchTeamsList');
       selectedMatch = null;
@@ -190,13 +190,13 @@ let Teams = () => {
   }
 
   let teamCreateNameSubmit = () => {
-    let name = teamCreateNameInput.value;
+    let name = teamCreateNameInput!.value;
     if(teamCreateNameInputSubmitted || name.trim().length === 0)return;
 
     teamCreateNameInputSubmitted = true;
-    teamCreateNameInput.disabled = true;
+    teamCreateNameInput!.disabled = true;
 
-    teamCreateNameInputSubmit.innerText = 'Loading...';
+    teamCreateNameInputSubmit!.innerText = 'Loading...';
 
     fetch(window.ENDPOINT + '/api/v1/teams/create', {
       method: 'POST',
@@ -214,18 +214,18 @@ let Teams = () => {
         }
 
         anime({
-          targets: teamCreateContainer,
+          targets: teamCreateContainer!,
           opacity: 0,
           easing: 'easeInOutQuad',
           duration: 100,
           complete: () => {
-            teamCreateNameInput.value = '';
+            teamCreateNameInput!.value = '';
     
-            teamCreateContainer.style.display = 'none';
-            teamCreateNameInputSubmit.innerText = 'Create Match';
+            teamCreateContainer!.style.display = 'none';
+            teamCreateNameInputSubmit!.innerText = 'Create Match';
     
             teamCreateNameInputSubmitted = false;
-            teamCreateNameInput.disabled = false;
+            teamCreateNameInput!.disabled = false;
           }
         });
       })
@@ -237,19 +237,19 @@ let Teams = () => {
 
   let selectedTeamId: string | null = null;
   let teamEditor = ( team: Team ) => {
-    teamEditContainer.style.display = 'block';
+    teamEditContainer!.style.display = 'block';
     selectedTeamId = team._id;
 
-    teamTitle.innerHTML = team.name;
-    teamTitleEdit.value = team.name;
+    teamTitle!.innerHTML = team.name;
+    teamTitleEdit!.value = team.name;
 
-    teamColourInput.value = team.colour;
-    teamEditPlayers.innerHTML = '';
+    teamColourInput!.value = team.colour;
+    teamEditPlayers!.innerHTML = '';
 
     currentEditingTeam = team;
 
     team.players.forEach(p => {
-      teamEditPlayers.appendChild(<div>
+      teamEditPlayers!.appendChild(<div>
         <input style={{ display: 'none' }} value={ p.name } onKeyUp={( e ) => {
           if(e.key === "Enter"){
             e.currentTarget.style.display = 'none';
@@ -293,7 +293,7 @@ let Teams = () => {
     })
 
     anime({
-      targets: teamEditContainer,
+      targets: teamEditContainer!,
       opacity: [ 0, 1 ],
       easing: 'easeInOutQuad',
       duration: 100
@@ -339,12 +339,12 @@ let Teams = () => {
       dropdownOpen = false;
 
       anime({
-        targets: dropdownOptions,
+        targets: dropdownOptions!,
         easing: 'easeInOutQuad',
         duration: 100,
         opacity: [ 1, 0 ],
         complete: () => {
-          dropdownOptions.style.display = 'none';
+          dropdownOptions!.style.display = 'none';
         }
       })
     }
@@ -352,25 +352,25 @@ let Teams = () => {
 
   let fetchTeams = async () => {
     if(!selectedMatch){
-      teamsList.innerHTML = 'No Match Selected.';
+      teamsList!.innerHTML = 'No Match Selected.';
       return;
     }
 
     let req = await fetch(window.ENDPOINT + '/api/v1/teams/list?match_id=' + selectedMatch, { headers: { 'Authorization': `Bearer ${cooki.getStore('token')}` } });
     let res = await req.json();
 
-    teamsList.innerHTML = '';
+    teamsList!.innerHTML = '';
 
     res.teams.forEach(( team: Team ) => {
       teams.push(team);
 
       let name: HTMLDivElement;
 
-      teamsList.appendChild(<div class="team" ref={( el ) => teamsListContainer[team._id] = el}>
+      teamsList!.appendChild(<div class="team" ref={( el ) => teamsListContainer[team._id] = el}>
         <div class="team-name" ref={name!}>{ team.name }</div>
         { Team.formatPlayerList(team) }
         <div class="button" onClick={() => {
-          team.name = name.innerText;
+          team.name = name!.innerText;
           teamEditor(team)
         }}>Edit</div>
       </div> as HTMLElement);
@@ -378,29 +378,29 @@ let Teams = () => {
   }
 
   onMount(() => {
-    teamCreateNameInput.onchange = teamCreateNameSubmit;
-    teamCreateNameInputSubmit.onclick = teamCreateNameSubmit;
+    teamCreateNameInput!.onchange = teamCreateNameSubmit;
+    teamCreateNameInputSubmit!.onclick = teamCreateNameSubmit;
 
-    teamCreateBackButton.onclick = () => {
+    teamCreateBackButton!.onclick = () => {
       anime({
-        targets: teamCreateContainer,
+        targets: teamCreateContainer!,
         opacity: 0,
         easing: 'easeInOutQuad',
         duration: 100,
         complete: () => {
-          teamCreateNameInput.value = '';
-          teamCreateContainer.style.display = 'none';
+          teamCreateNameInput!.value = '';
+          teamCreateContainer!.style.display = 'none';
         }
       });
     }
 
     window.MatchManager.onMatchesChange(( matches, selected ) => {
       if(matches.length === 0){
-        dropdownOptions.innerHTML = '';
-        dropdownOptions.appendChild(<div class="teams-dropdown-option">No Selected Match</div> as HTMLElement);
+        dropdownOptions!.innerHTML = '';
+        dropdownOptions!.appendChild(<div class="teams-dropdown-option">No Selected Match</div> as HTMLElement);
 
-        dropdownCurrent.innerHTML = 'No Selected Match';
-        teamsList.innerText = 'No Match Selected';
+        dropdownCurrent!.innerHTML = 'No Selected Match';
+        teamsList!.innerText = 'No Match Selected';
 
         selectMatch(null);
         return;
@@ -411,22 +411,22 @@ let Teams = () => {
       else{
         let match = matches.find(x => x._id === selectedMatch);
         if(match){
-          dropdownCurrent.innerHTML = match.name;
-          addTeamButton.style.display = 'block';
+          dropdownCurrent!.innerHTML = match.name;
+          addTeamButton!.style.display = 'block';
 
           fetchTeams();
         } else
           selectMatch(selected);
       }
 
-      dropdownOptions.innerHTML = '';
+      dropdownOptions!.innerHTML = '';
 
       matches.forEach(match => {
-        dropdownOptions.appendChild(<div class="teams-dropdown-option" onClick={() => selectMatch(match)}>{ match.name }</div> as HTMLElement);
+        dropdownOptions!.appendChild(<div class="teams-dropdown-option" onClick={() => selectMatch(match)}>{ match.name }</div> as HTMLElement);
       })
     })
 
-    anime.set(dropdownOptions, { opacity: '0', display: 'none' });
+    anime.set(dropdownOptions!, { opacity: '0', display: 'none' });
 
     let token = cooki.getStore('token');
     if(!token)return natigate('/');
@@ -463,41 +463,41 @@ let Teams = () => {
       })
       .catch(console.error);
 
-    teamTitleEdit.style.display = 'none';
+    teamTitleEdit!.style.display = 'none';
 
-    teamTitle.onclick = () => {
+    teamTitle!.onclick = () => {
       if(!selectedMatch || window.MatchManager.isPlaying())return;
 
-      teamTitleEdit.style.display = 'inline-block';
-      teamTitle.style.display = 'none';
+      teamTitleEdit!.style.display = 'inline-block';
+      teamTitle!.style.display = 'none';
 
-      teamTitleEdit.select();
+      teamTitleEdit!.select();
     }
 
-    teamTitleEdit.onchange = () => {
-      teamTitleEdit.style.display = 'none';
-      teamTitle.style.display = 'inline-block';
+    teamTitleEdit!.onchange = () => {
+      teamTitleEdit!.style.display = 'none';
+      teamTitle!.style.display = 'inline-block';
 
-      teamTitle.innerHTML = teamTitleEdit.value;
-      renameTeam(teamTitleEdit.value);
+      teamTitle!.innerHTML = teamTitleEdit!.value;
+      renameTeam(teamTitleEdit!.value);
     }
 
-    teamTitleEdit.onkeyup = ( e ) => {
+    teamTitleEdit!.onkeyup = ( e ) => {
       if(e.key === 'Enter'){
-        teamTitleEdit.style.display = 'none';
-        teamTitle.style.display = 'inline-block';
+        teamTitleEdit!.style.display = 'none';
+        teamTitle!.style.display = 'inline-block';
 
-        teamTitle.innerHTML = teamTitleEdit.value;
-        renameTeam(teamTitleEdit.value);
+        teamTitle!.innerHTML = teamTitleEdit!.value;
+        renameTeam(teamTitleEdit!.value);
       }
     }
   })
 
   let addTeam = () => {
-    teamCreateContainer.style.display = 'block';
+    teamCreateContainer!.style.display = 'block';
 
     anime({
-      targets: teamCreateContainer,
+      targets: teamCreateContainer!,
       opacity: 1,
       easing: 'easeInOutQuad',
       duration: 100
@@ -542,20 +542,20 @@ let Teams = () => {
               dropdownOpen = false;
 
               anime({
-                targets: dropdownOptions,
+                targets: dropdownOptions!,
                 easing: 'easeInOutQuad',
                 duration: 100,
                 opacity: [ 1, 0 ],
                 complete: () => {
-                  dropdownOptions.style.display = 'none';
+                  dropdownOptions!.style.display = 'none';
                 }
               })
             } else{
               dropdownOpen = true;
-              dropdownOptions.style.display = 'block';
+              dropdownOptions!.style.display = 'block';
 
               anime({
-                targets: dropdownOptions,
+                targets: dropdownOptions!,
                 easing: 'easeInOutQuad',
                 duration: 100,
                 opacity: [ 0, 1 ]
@@ -599,12 +599,12 @@ let Teams = () => {
       <div class="team-edit-container" ref={teamEditContainer!}>
         <div class="back-button" onClick={() => {
           anime({
-            targets: teamEditContainer,
+            targets: teamEditContainer!,
             opacity: [ 1, 0 ],
             easing: 'easeInOutQuad',
             duration: 100,
             complete: () => {
-              teamEditContainer.style.display = 'none';
+              teamEditContainer!.style.display = 'none';
             }
           })
         }}>&lt; Back</div>
@@ -619,7 +619,7 @@ let Teams = () => {
             <h3>Players <div class="add-team-player" onClick={() => {
               editingTempPlayer = new Player();
 
-              teamEditPlayers.appendChild(<div id="temp-player-editor">
+              teamEditPlayers!.appendChild(<div id="temp-player-editor">
                 <input onChange={( el ) => {
                   editingTempPlayer!.name = el.target.value;
                   submitTempPlayer();
@@ -665,12 +665,12 @@ let Teams = () => {
                   teams = teams.filter(x => x._id !== selectedTeamId);
 
                   anime({
-                    targets: teamEditContainer,
+                    targets: teamEditContainer!,
                     opacity: [ 1, 0 ],
                     easing: 'easeInOutQuad',
                     duration: 100,
                     complete: () => {
-                      teamEditContainer.style.display = 'none';
+                      teamEditContainer!.style.display = 'none';
                     }
                   })
 
