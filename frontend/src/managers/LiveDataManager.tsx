@@ -32,6 +32,9 @@ class LiveDataManager{
       this._displaySocketUpdate(json);
 
       switch(json.type){
+        case 'auth-success':
+          console.log('Authenticated and connected.');
+          break;
         case 'select-match':
           window.MatchManager.selectMatchDisplay(json.match._id);
           break;
@@ -109,6 +112,7 @@ class LiveDataManager{
     if(this._sentHello)return;
     this._sentHello = true;
 
+    console.log('Authenticating...');
     this._ws.send(JSON.stringify({ type: 'auth', token: cooki.getStore('token') }));
   }
 

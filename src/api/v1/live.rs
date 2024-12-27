@@ -1,6 +1,6 @@
 use std::sync::Arc;
 use axum::{ extract::ws::{ WebSocket, WebSocketUpgrade, Message }, response::IntoResponse, Extension };
-use serde_json::Value;
+use serde_json::{json, Value};
 use tokio::sync::Mutex;
 use crate::apphandler::AppHandler;
 use futures_util::{ SinkExt, StreamExt };
@@ -44,6 +44,8 @@ async fn handle_socket( ws: WebSocket, app: Arc<AppHandler> ){
             // It is a valid token, we'll subscribe them to the main broadcast channel
             let ws_tx = Arc::new(Mutex::new(ws_tx));
             let mut app_rx = app.live().tx.lock().await.subscribe();
+
+            ws_tx.lock().await.send(Message::Text(json!({ "type": "auth-success" }).to_string())).await.unwrap();
 
             // Start a new thread to listen for messages from the broadcast channel and forward them to the client
             tokio::spawn(async move {
